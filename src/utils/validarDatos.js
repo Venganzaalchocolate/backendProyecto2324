@@ -8,15 +8,12 @@ const validEmail =(email)=>{
   }
 
 const validNumber=(dato)=>{
-    // Comprobamos si el dato es un número entero positivo
-    if (Number.isInteger(dato) && dato > 0) {
-      return true;
+    // Comprobamos si el dato es un número
+    const numAux=dato.replace(/[^0-9]/g, '')
+    if (dato.length == numAux.length) {
+      if (parseInt(numAux)>0) return true;
     }
   
-    // Comprobamos si el dato es un float positivo
-    if (typeof dato === "number" && dato > 0) {
-      return true;
-    }
   
     // En caso contrario, el dato no es positivo
     return false;
@@ -32,6 +29,22 @@ const validName=(name)=>{
     if (caracteresProhibidos.test(name)) return false;
     // Si todo está bien, el string es válido
     return true;
+}
+
+const validDataString=(palabra)=>{
+  const caracteresProhibidos = /[<>&"]/;
+  // Verificar si el input es un string
+  if (typeof palabra !== 'string') return false;
+  // Verificar si hay caracteres especiales que podrían indicar intento de inyección de código
+  if (caracteresProhibidos.test(palabra)) return false;
+  // Si todo está bien, el string es válido
+  return true;
+}
+
+const prevenirInyeccionCodigo=(cadenaEntrada)=>{
+  // Codifica la cadena para evitar escape de HTML
+  // Sanitiza la cadena para eliminar caracteres potencialmente dañinos
+  return cadenaEntrada.replace(/[<>%\/"`\s]+/g, '_');
 }
 
 const validDate=(fecha)=>{
@@ -62,6 +75,7 @@ const esPassSegura=(pass)=>{
     validName,
     validNumber,
     validDate,
-    createDate
-    
+    createDate,
+    validDataString,
+    prevenirInyeccionCodigo
   };

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 
 const order = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     userId: { 
         type: mongoose.Schema.Types.ObjectId, 
         required: true 
@@ -25,4 +24,4 @@ const order = mongoose.Schema({
     }
 });
 
-module.exports=mongoose.model('Order', games)
+module.exports=mongoose.model('Order', order)

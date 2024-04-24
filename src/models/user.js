@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const user = mongoose.Schema({
     name:{
         type: String,
@@ -17,6 +18,7 @@ const user = mongoose.Schema({
     },
     direction:{
         type: String,
+        required: true
     }
 });
 

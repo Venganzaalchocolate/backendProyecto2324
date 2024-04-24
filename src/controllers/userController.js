@@ -14,12 +14,12 @@ const postCrearUsuario = async (req, res) => {
     // genero una password segura
     const passSegura=generarHashpass(req.body.pass);
     const newUser=new User({
-        name: req.body.name,
-        email:req.body.email,
+        name: prevenirInyeccionCodigo(req.body.name),
+        email:prevenirInyeccionCodigo(req.body.email),
         pass: await passSegura,
     })
     // Guardar el usuario en la base de datos
-    const savedUser = await newUser.save();
+    const savedUser = await newUser.saved();
     // Enviar el usuario guardado como respuesta
     response(res, 200, savedUser)
 }
@@ -54,8 +54,8 @@ const UserDeleteId=async (req, res)=>{
 const userPut=async (req, res)=>{
     const filter = { _id: req.body.id};
     const updateText={};
-    if(!!req.body.name) updateText['name']=req.body.name;
-    if(!!req.body.email && !validEmail(req.body.email) ) updateText['email']=req.body.name;
+    if(!!req.body.name) updateText['name']=prevenirInyeccionCodigo(req.body.name);
+    if(!!req.body.email && !validEmail(req.body.email) ) updateText['email']=prevenirInyeccionCodigo(req.body.email);
     if(!!req.body.pass && !esPassSegura(req.body.pass) ) updateText['pass']=await generarHashpass(req.body.pass);
     let doc = await User.findOneAndUpdate(filter, updateText);
     response(res, 200, doc);

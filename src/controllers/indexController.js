@@ -1,5 +1,6 @@
 const {postCrearUsuario, getUserID, getUser, UserDeleteId, userPut}=require("./userController");
 const {postCrearJuego}=require("./gamesController");
+const { postCrearOrder, getOrder, getOrderID, orderDeleteId } = require("./orderController");
 
 module.exports = {
     postCrearUsuario,
@@ -7,5 +8,9 @@ module.exports = {
     getUser,
     UserDeleteId,
     userPut,
-    postCrearJuego
+    postCrearJuego,
+    postCrearOrder,
+    getOrder,
+    getOrderID,
+    orderDeleteId,
 }

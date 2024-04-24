@@ -1,7 +1,9 @@
 //usamos express como freamwork
 const express=require('express');
 const mongoose=require("mongoose")
-const userRoutes=require("./routes/indexRoutes");
+const userRoutes=require("./routes/userRoutes");
+const gamesRoutes=require("./routes/gamesRoutes");
+const orderRoutes=require("./routes/orderRoutes");
 const resError = require('./utils/resError');
 const { ClientError } = require('./utils/clientError');
 
@@ -14,7 +16,9 @@ const app=express();
 // donde escucha el servidor 
 app.listen(4000);
 //le ponemos un "prefijo" a las rutas
-app.use('/api',userRoutes)
+app.use('/api/games',gamesRoutes)
+app.use('/api/order',orderRoutes)
+app.use('/api/user',userRoutes)
 //le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
 app.use((err,req,res,next)=>{
   const statusCode=err.status || 500;

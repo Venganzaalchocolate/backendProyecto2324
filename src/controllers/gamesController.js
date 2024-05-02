@@ -16,14 +16,14 @@ const postCrearGames = async (req, res) => {
     // Crear un nuevo Games
     //utilizando el modelo de Mongoose
     const newGame=new Games({
-        name: req.body.name,
-        category: req.body.category,
-        author: req.body.author,
-        publisher: req.body.publisher,
-        numberOfPlayers: req.body.numberOfPlayers,
-        recommendedAge: req.body.recommendedAge, 
-        duration: req.body.duration,
-        description: req.body.description,
+        name: prevenirInyeccionCodigo(req.body.name),
+        category: prevenirInyeccionCodigo(req.body.category),
+        author: prevenirInyeccionCodigo(req.body.author),
+        publisher: prevenirInyeccionCodigo(req.body.publisher),
+        numberOfPlayers: prevenirInyeccionCodigo(req.body.numberOfPlayers),
+        recommendedAge: prevenirInyeccionCodigo(req.body.recommendedAge), 
+        duration: prevenirInyeccionCodigo(req.body.duration),
+        description: prevenirInyeccionCodigo(req.body.description),
     })
     // Guardar el games en la base de datos
     const savedGame = await newGame.save();

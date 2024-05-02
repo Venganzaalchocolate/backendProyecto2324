@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 const games = mongoose.Schema({
     name: { 
         type: String, 
-        required: true 
+        required: true,
+        index: true,
+        unique: true
     }, 
     category: { 
         type: String,
@@ -39,6 +41,10 @@ const games = mongoose.Schema({
         type: String, 
         
     },
+    price:{
+        type: Number,
+        required: true
+    }
 });
 
 module.exports=mongoose.model('Games', games)

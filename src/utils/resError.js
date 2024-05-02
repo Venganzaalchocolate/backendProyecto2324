@@ -5,4 +5,6 @@ const resError=(res, status,message)=>{
     })
   }
 
-  module.exports=resError;
+  module.exports = {
+    resError
+  };

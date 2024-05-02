@@ -77,5 +77,6 @@ const esPassSegura=(pass)=>{
     validDate,
     createDate,
     validDataString,
-    prevenirInyeccionCodigo
+    prevenirInyeccionCodigo,
+
   };

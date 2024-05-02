@@ -1,6 +1,7 @@
 //usamos express como freamwork
 const express=require('express');
 const mongoose=require("mongoose")
+const cors = require('cors'); // Importa el paquete cors
 const userRoutes=require("./routes/userRoutes");
 const gamesRoutes=require("./routes/gamesRoutes");
 const orderRoutes=require("./routes/orderRoutes");
@@ -15,7 +16,8 @@ const app=express();
 // le asignamos una constante a las rutas de usuario
 
 // donde escucha el servidor 
-app.listen(4000);
+app.listen(process.env.PORT);
+app.use(cors());
 //le ponemos un "prefijo" a las rutas
 app.use('/api',gamesRoutes)
 app.use('/api',orderRoutes)

@@ -3,9 +3,11 @@ const { generarHashpass } = require('./bcrypt');
 const {catchAsync} =require('./catchAsync')
 const {response}=require('./response')
 const {ClientError}=require('./clientError')
-const {resError}=require('./resError')
+const {resError}= require('./resError');
+const { calcularPrecio } = require("./utils");
 
-module.exports = {
+module.exports  = {
+    resError,
     validEmail,
     validName,
     esPassSegura,
@@ -13,10 +15,11 @@ module.exports = {
     catchAsync,
     response,
     ClientError,
-    resError,
     validNumber,
     validDate,
     createDate,
     validDataString,
-    prevenirInyeccionCodigo
+    prevenirInyeccionCodigo,
+    calcularPrecio,
+
 }

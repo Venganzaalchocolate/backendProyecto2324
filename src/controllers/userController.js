@@ -1,11 +1,13 @@
 const {User} = require('../models/indexModels');
-const { esPassSegura, validName, validEmail, catchAsync, response, gestionErrores, ClientError, generarHashpass } = require('../utils/indexUtils')
+const {prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
 
 // crear usuario
 const postCrearUsuario = async (req, res) => {
     // doble comprobación, primero por seguridad en el frontend nos aseguraremos que los datos enviados sean correctos,
     // y aquí (backend) volveremos ha hacer una doble comprobación para evitar injección de código
-    if (!validEmail(req.body.email) ||
+
+    if (!req.body.name || !req.body.email || !req.body.pass || !req.body.direction ||
+        !validEmail(req.body.email) ||
         !validName(req.body.name) ||
         !esPassSegura(req.body.pass)
     ) throw new ClientError("Los datos no son correctos", 400);
@@ -15,11 +17,12 @@ const postCrearUsuario = async (req, res) => {
     const passSegura=generarHashpass(req.body.pass);
     const newUser=new User({
         name: prevenirInyeccionCodigo(req.body.name),
-        email:prevenirInyeccionCodigo(req.body.email),
+        email: prevenirInyeccionCodigo(req.body.email),
         pass: await passSegura,
+        direction: prevenirInyeccionCodigo(req.body.direction)
     })
     // Guardar el usuario en la base de datos
-    const savedUser = await newUser.saved();
+    const savedUser = await newUser.save();
     // Enviar el usuario guardado como respuesta
     response(res, 200, savedUser)
 }
@@ -55,9 +58,10 @@ const userPut=async (req, res)=>{
     const filter = { _id: req.body.id};
     const updateText={};
     if(!!req.body.name) updateText['name']=prevenirInyeccionCodigo(req.body.name);
-    if(!!req.body.email && !validEmail(req.body.email) ) updateText['email']=prevenirInyeccionCodigo(req.body.email);
+    if(!!req.body.email) updateText['email']=prevenirInyeccionCodigo(req.body.email);
     if(!!req.body.pass && !esPassSegura(req.body.pass) ) updateText['pass']=await generarHashpass(req.body.pass);
     let doc = await User.findOneAndUpdate(filter, updateText);
+    if(doc==null)throw new ClientError("No existe el usuario", 400)
     response(res, 200, doc);
 }
 

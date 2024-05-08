@@ -1,5 +1,5 @@
 const {User} = require('../models/indexModels');
-const {prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
+const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
 
 // crear usuario
 const postCrearUsuario = async (req, res) => {
@@ -19,7 +19,7 @@ const postCrearUsuario = async (req, res) => {
         name: prevenirInyeccionCodigo(req.body.name),
         email: prevenirInyeccionCodigo(req.body.email),
         pass: await passSegura,
-        direction: prevenirInyeccionCodigo(req.body.direction)
+        direction: prevenirInyeccionCodigo(req.body.direction),
     })
     // Guardar el usuario en la base de datos
     const savedUser = await newUser.save();
@@ -28,7 +28,7 @@ const postCrearUsuario = async (req, res) => {
 }
 
 //recoge todos los usuarios
-const getUser= async (req,res)=>{
+const getUsers= async (req,res)=>{
     // Utiliza el método find() de Mongoose para obtener todos los documentos en la colección
     const usuarios = await User.find();
     // Responde con la lista de usuarios y código de estado 200 (OK)
@@ -68,7 +68,7 @@ const userPut=async (req, res)=>{
 module.exports = {
     //gestiono los errores con catchAsync
     postCrearUsuario:catchAsync(postCrearUsuario),
-    getUser:catchAsync(getUser),
+    getUsers:catchAsync(getUsers),
     getUserID:catchAsync(getUserID),
     UserDeleteId:catchAsync(UserDeleteId),
     userPut:catchAsync(userPut)

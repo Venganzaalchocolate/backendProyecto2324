@@ -51,6 +51,28 @@ const getGamesID= async (req,res)=>{
     response(res, 200, games);
 }
 
+//lista d ejuegos con filtro y paginacion
+const getGamesFilterLimit= async (req,res)=>{
+    // Obtén el ID del parámetro de la solicitud
+    
+    const filtro = JSON.parse(req.params.filtro);
+    const indiceInicio=req.params.principio;
+    const limitePorPagina=req.params.fin
+    // Utiliza el método findById() de Mongoose para buscar un games por su ID
+    // Si no se encuentra el games, responde con un código de estado 404 (Not Found)
+    const cantidad = await Games.find(filtro).countDocuments()
+    const games = await Games.find(filtro).skip(indiceInicio).limit(limitePorPagina).catch(error => {throw new ClientError('games no encontrado', 404)});
+    // Responde con el games encontrado y código de estado 200 (OK)
+    response(res, 200, games);
+}
+
+const getCountGamesFilter= async (req,res)=>{
+    // Obtén el ID del parámetro de la solicitud   
+    const cantidad = await Games.find(filtro).countDocuments().catch(error => {throw new ClientError('Error en la BBDD al contabilizar el numero de juegos', 500)});
+    // Responde con el games encontrado y código de estado 200 (OK)
+    response(res, 200, cantidad);
+}
+
 // borrar un games
 const gamesDeleteId=async (req, res)=>{
     const id = req.params.id;
@@ -87,6 +109,32 @@ const gamesPut=async (req, res)=>{
     response(res, 200, doc);
 }
 
+const crearJuegosPrueba=async ()=>{
+    let contador=0
+    let categoria=['Adventure', 'Strategy', 'Card', 'Family', 'Eurogame', 'Party'];
+
+    for (let index = 0; index < 50; index++) {
+        const newGame=new Games({
+            name: `nombre ${contador}` ,
+            category: categoria[Math.floor(Math.random() * categoria.length)],
+            author:`author`,
+            publisher: `editorial`,
+            numberOfPlayers: 4,
+            recommendedAge: Math.floor(Math.random() * 16) + 1, 
+            duration: Math.floor(Math.random() * (300 - 5 + 1)) + 5,
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate",
+            price: (Math.random() * (300 - 2) + 2).toFixed(2),
+            stock:Math.floor(Math.random() * 16) + 1
+
+        })
+        // Guardar el games en la base de datos
+        const savedGame = await newGame.save();
+        // Enviar el games guardado como respuesta
+        contador+=1;
+    }
+    response(res, 200, {'response':'ok'});
+}
+
 
 module.exports = {
     //gestiono los errores con catchAsync
@@ -94,5 +142,8 @@ module.exports = {
     getGames:catchAsync(getGames),
     getGamesID:catchAsync(getGamesID),
     gamesDeleteId:catchAsync(gamesDeleteId),
-    gamesPut:catchAsync(gamesPut)
+    gamesPut:catchAsync(gamesPut),
+    crearJuegosPrueba:catchAsync(crearJuegosPrueba),
+    getGamesFilterLimit:catchAsync(getGamesFilterLimit),
+    getCountGamesFilter:catchAsync(getCountGamesFilter)
 }

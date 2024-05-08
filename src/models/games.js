@@ -44,6 +44,10 @@ const games = mongoose.Schema({
     price:{
         type: Number,
         required: true
+    },
+    stock:{
+        type:Number,
+        default:0
     }
 });
 

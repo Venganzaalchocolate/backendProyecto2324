@@ -5,7 +5,8 @@ const cors = require('cors'); // Importa el paquete cors
 const userRoutes=require("./routes/userRoutes");
 const gamesRoutes=require("./routes/gamesRoutes");
 const orderRoutes=require("./routes/orderRoutes");
-const resError = require('./utils/resError');
+const loginRoutes=require("./routes/loginRoutes");
+const {resError} = require('./utils/indexUtils');
 const { ClientError } = require('./utils/clientError');
 
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use('/api',gamesRoutes)
 app.use('/api',orderRoutes)
 app.use('/api',userRoutes)
+app.use('/api',loginRoutes)
 //le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
 app.use((err,req,res,next)=>{
   const statusCode=err.status || 500;

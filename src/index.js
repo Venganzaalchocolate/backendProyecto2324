@@ -14,6 +14,8 @@ const { ClientError } = require('./utils/clientError');
 require('dotenv').config()
 
 const app=express();
+// Middleware para parsear el cuerpo de la solicitud como JSON
+app.use(express.json());
 // le asignamos una constante a las rutas de usuario
 
 // donde escucha el servidor 

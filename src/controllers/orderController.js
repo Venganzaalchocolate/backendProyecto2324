@@ -1,14 +1,12 @@
-const {Order} = require('../models/indexModels');
+const {Order, ListaJuegos} = require('../models/indexModels');
 const {  prevenirInyeccionCodigo, catchAsync, response, gestionErrores, ClientError, generarHashpass, calcularPrecio } = require('../utils/indexUtils');
 
 // crear usuario
 const postCrearOrder = async (req, res) => {
-    let listJuegos={}
-    listJuegos=JSON.parse(req.body.listaJuegos).catch( error=>{ throw new ClientError('Lista de juegos no valida', 404)});
-
+    let listJuegos=[]
     const newOrder=new Order({
         userId: prevenirInyeccionCodigo(req.body.userId),
-        listaJuegos: listJuegos,
+        listaJuegos: req.body.listaJuegos,
         date: new Date(),
         totalPrice: calcularPrecio(listJuegos),
         })

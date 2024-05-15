@@ -1,5 +1,6 @@
 const {User} = require('../models/indexModels');
-const {catchAsync, response, ClientError, comprobarPass, generarToken} = require('../utils/indexUtils')
+const {catchAsync, response, ClientError, comprobarPass, generarToken, verificarToken} = require('../utils/indexUtils')
+const jwt=require('jsonwebtoken')
 
 //comprueba un usuario
 const login= async (req,res)=>{
@@ -15,9 +16,23 @@ const login= async (req,res)=>{
     response(res, 200, respuesta);
 }
 
+const validToken=async(req,res)=>{
+    const token=req.body.token
+    if(verificarToken(token)){
+        const id=jwt.decode(token)._id
+        const usuario = await User.findOne({ _id: id});
+        response(res,200,usuario)
+    } else{
+        throw new ClientError("El token no es correcto o a expirado", 403);
+    }
+    
+
+}
+
 
 
 module.exports = {
     //gestiono los errores con catchAsync
-    login:catchAsync(login)
+    login:catchAsync(login),
+    validToken:catchAsync(validToken)
 }

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const cantidadJuegosSchema = new mongoose.Schema({
+const cantidadJuegosSchema = mongoose.Schema({
     gameId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -16,7 +16,7 @@ const cantidadJuegosSchema = new mongoose.Schema({
     }
   });
 
-const order = mongoose.Schema({
+const order =  mongoose.Schema({
     userId: { 
         type: mongoose.Schema.Types.ObjectId, 
         required: true,
@@ -36,4 +36,7 @@ const order = mongoose.Schema({
     }
 });
 
-module.exports=mongoose.model('Order', order)
+module.exports={
+    Order:mongoose.model('Order', order),
+    ListaJuegos:mongoose.model('ListaJuegos', cantidadJuegosSchema)
+}

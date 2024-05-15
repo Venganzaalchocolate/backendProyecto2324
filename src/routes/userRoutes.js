@@ -4,6 +4,7 @@ const {postCrearUsuario, getUserID, getUsers, UserDeleteId, userPut, tokenValid,
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+
 router.get("/users", urlencodedParser,tokenValidAdmin, getUsers)
 router.get("/user/:id", urlencodedParser,tokenValid, getUserID)
 router.post("/crearusuario", urlencodedParser,postCrearUsuario)

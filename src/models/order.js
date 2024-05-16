@@ -4,7 +4,10 @@ const cantidadJuegosSchema = mongoose.Schema({
     gameId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      
+    },
+    nameGame:{
+        type:String,
+        required:true
     },
     quantity: {
       type: Number,
@@ -30,9 +33,18 @@ const order =  mongoose.Schema({
         required: true ,
         index: true,
     }, 
+    address: {
+        type:String,
+        required:true
+    }, 
     totalPrice: { 
         type: Number,
         required: true 
+    },
+    state:{
+        type: String,
+        required: true,
+        enum: ['Pagado', 'Preparando', 'Enviado', 'Entregado']
     }
 });
 

@@ -8,6 +8,8 @@ const postCrearOrder = async (req, res) => {
         userId: prevenirInyeccionCodigo(req.body.userId),
         listaJuegos: req.body.listaJuegos,
         date: new Date(),
+        adress:req.body.adress,
+        state:'Pagado',
         totalPrice: calcularPrecio(listJuegos),
         })
     // Guardar el pedido en la base de datos
@@ -17,8 +19,9 @@ const postCrearOrder = async (req, res) => {
 }
 //recoge todos los usuarios
 const getOrder= async (req,res)=>{
+    const id = req.body.id;
     // Utiliza el método find() de Mongoose para obtener todos los documentos en la colección
-    const orders = await Order.find();
+    const orders = await Order.find({userId:id});
     // Responde con la lista de pedidos y código de estado 200 (OK)
     response(res, 200, orders);
 }

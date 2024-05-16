@@ -4,7 +4,7 @@ const {getOrder, getOrderID, postCrearOrder, orderDeleteId, tokenValid, tokenVal
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-router.get("/orders", urlencodedParser, tokenValid, getOrder)
+router.post("/orders", urlencodedParser, tokenValid, getOrder)
 router.get("/order/:id", urlencodedParser,tokenValid, getOrderID)
 router.post("/crearorder", urlencodedParser,tokenValid,postCrearOrder)
 router.delete("/borrarorder/:id", urlencodedParser,tokenValidAdmin, orderDeleteId)

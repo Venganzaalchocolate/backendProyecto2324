@@ -25,7 +25,6 @@ const tokenValidAdmin=async (req, res, next)=>{
         if(verificacion==null) res.status(409).send({error:true, message: "El token no es valido, pero pasa bien"});
         if(verificacion.role && verificacion.role=='admin') next();
         else res.status(409).send({error:true, message: "El usuario no está autorizado"})
-        next();
     } catch (error) {
         res.status(409).send({error:true, message: "El token no es valido"})
     }

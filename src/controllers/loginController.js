@@ -5,7 +5,7 @@ const jwt=require('jsonwebtoken')
 //comprueba un usuario
 const login= async (req,res)=>{
     const emailAux=req.body.email
-    const passAux=req.body.pass
+    const passAux=req.body.password
     // Utiliza el método findOne() de Mongoose para obtener 1 usuario
     const usuario = await User.findOne({ email: emailAux});
     if(usuario == null) throw new ClientError("El nombre no es correcto", 403);

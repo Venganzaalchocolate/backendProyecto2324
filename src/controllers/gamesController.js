@@ -116,10 +116,10 @@ const gamesPut = async (req, res) => {
 }
 
 const crearJuegosPrueba = async (req, res) => {
-    let contador = 0
+    let contador = 200
     let categoria = ['Adventure', 'Strategy', 'Card', 'Family', 'Eurogame', 'Party'];
 
-    for (let index = 0; index < 50; index++) {
+    for (let index = 0; index < 500; index++) {
         const newGame = new Games({
             name: `nombre ${contador}`,
             category: categoria[Math.floor(Math.random() * categoria.length)],
@@ -131,14 +131,13 @@ const crearJuegosPrueba = async (req, res) => {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate",
             price: (Math.random() * (300 - 2) + 2).toFixed(2),
             stock: Math.floor(Math.random() * 16) + 1
-
         })
         // Guardar el games en la base de datos
         const savedGame = await newGame.save();
         // Enviar el games guardado como respuesta
         contador += 1;
     }
-    response(res, 200, savedGame);
+    response(res, 200, {message:'ok'});
 }
 
 const getCategory = async (req, res) => {

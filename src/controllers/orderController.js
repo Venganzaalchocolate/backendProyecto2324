@@ -3,14 +3,14 @@ const {  prevenirInyeccionCodigo, catchAsync, response, gestionErrores, ClientEr
 
 // crear usuario
 const postCrearOrder = async (req, res) => {
-    let listJuegos=[]
+
     const newOrder=new Order({
         userId: prevenirInyeccionCodigo(req.body.userId),
         listaJuegos: req.body.listaJuegos,
         date: new Date(),
-        adress:req.body.adress,
+        address: req.body.address,
         state:'Pagado',
-        totalPrice: calcularPrecio(listJuegos),
+        totalPrice: req.body.totalPrice,
         })
     // Guardar el pedido en la base de datos
     const savedOrder = await newOrder.save();

@@ -6,20 +6,20 @@ const postCrearUsuario = async (req, res) => {
     // doble comprobación, primero por seguridad en el frontend nos aseguraremos que los datos enviados sean correctos,
     // y aquí (backend) volveremos ha hacer una doble comprobación para evitar injección de código
 
-    if (!req.body.name || !req.body.email || !req.body.pass || !req.body.direction ||
+    if (!req.body.nombre || !req.body.email || !req.body.password || !req.body.direccion ||
         !validEmail(req.body.email) ||
-        !validName(req.body.name) ||
-        !esPassSegura(req.body.pass)
+        !validName(req.body.nombre) ||
+        !esPassSegura(req.body.password)
     ) throw new ClientError("Los datos no son correctos", 400);
     // Crear un nuevo usuario utilizando el modelo de Mongoose
     //const newUser = new User(req.body);
     // genero una password segura
-    const passSegura=generarHashpass(req.body.pass);
+    const passSegura=generarHashpass(req.body.password);
     const newUser=new User({
-        name: prevenirInyeccionCodigo(req.body.name),
+        name: prevenirInyeccionCodigo(req.body.nombre),
         email: prevenirInyeccionCodigo(req.body.email),
         pass: await passSegura,
-        direction: prevenirInyeccionCodigo(req.body.direction),
+        direction: prevenirInyeccionCodigo(req.body.direccion),
     })
     // Guardar el usuario en la base de datos
     const savedUser = await newUser.save();
@@ -57,11 +57,13 @@ const UserDeleteId=async (req, res)=>{
 const userPut=async (req, res)=>{
     const filter = { _id: req.body.id};
     const updateText={};
-    if(!!req.body.name) updateText['name']=prevenirInyeccionCodigo(req.body.name);
-    if(!!req.body.email) updateText['email']=prevenirInyeccionCodigo(req.body.email);
-    if(!!req.body.pass && !esPassSegura(req.body.pass) ) updateText['pass']=await generarHashpass(req.body.pass);
+    if(req.body.nombre!=null) updateText['name']=prevenirInyeccionCodigo(req.body.nombre);
+    if(req.body.email!=null) updateText['email']=prevenirInyeccionCodigo(req.body.email);
+    if(req.body.direccion!=null) updateText['direction']=prevenirInyeccionCodigo(req.body.direccion);
+    if(req.body.password!=null && esPassSegura(req.body.password) ) updateText['pass']=await generarHashpass(req.body.password);
     let doc = await User.findOneAndUpdate(filter, updateText);
-    if(doc==null)throw new ClientError("No existe el usuario", 400)
+    if(doc!=null)doc= await User.findById(req.body.id)
+    else throw new ClientError("No existe el usuario", 400)
     response(res, 200, doc);
 }
 

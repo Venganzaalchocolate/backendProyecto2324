@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-router.get("/users", urlencodedParser,tokenValidAdmin, getUsers)
+router.get("/users", urlencodedParser, getUsers)
 router.get("/user/:id", urlencodedParser,tokenValid, getUserID)
 router.post("/crearusuario", urlencodedParser,postCrearUsuario)
 router.delete("/borrarusuario/:id", urlencodedParser, tokenValid,UserDeleteId)

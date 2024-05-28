@@ -130,7 +130,8 @@ const crearJuegosPrueba = async (req, res) => {
             duration: Math.floor(Math.random() * (300 - 5 + 1)) + 5,
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate",
             price: (Math.random() * (300 - 2) + 2).toFixed(2),
-            stock: Math.floor(Math.random() * 16) + 1
+            stock: Math.floor(Math.random() * 16) + 1,
+            image: 'dulcecaos'
         })
         // Guardar el games en la base de datos
         const savedGame = await newGame.save();

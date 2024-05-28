@@ -6,6 +6,7 @@ const userRoutes=require("./routes/userRoutes");
 const gamesRoutes=require("./routes/gamesRoutes");
 const orderRoutes=require("./routes/orderRoutes");
 const loginRoutes=require("./routes/loginRoutes");
+const emailRoutes=require("./routes/emailRoutes");
 const {resError} = require('./utils/indexUtils');
 const { ClientError } = require('./utils/clientError');
 
@@ -26,6 +27,7 @@ app.use('/api',gamesRoutes)
 app.use('/api',orderRoutes)
 app.use('/api',userRoutes)
 app.use('/api',loginRoutes)
+app.use('/api',emailRoutes)
 //le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
 app.use((err,req,res,next)=>{
   const statusCode=err.status || 500;

@@ -1,29 +1,35 @@
 const { Games } = require('../models/indexModels');
-const { validDataString, prevenirInyeccionCodigo, catchAsync, response, ClientError, validNumber } = require('../utils/indexUtils')
+const { validDataString, prevenirInyeccionCodigo, catchAsync, response, ClientError, validNumber, validDecimalNumber, validText } = require('../utils/indexUtils')
 
 const postCrearGames = async (req, res) => {
     // doble comprobación, primero por seguridad en el frontend nos aseguraremos que los datos enviados sean correctos,
     // y aquí (backend) volveremos ha hacer una doble comprobación para evitar injección de código
-    if (!!req.body.name && !validDataString(req.body.name)) throw new ClientError("El nombre no es correcto", 400);
-    if (!!req.body.category && !validDataString(req.body.category)) throw new ClientError("La categoria no es correcta", 400);
-    if (!!req.body.author && !validDataString(req.body.author)) throw new ClientError("El autor no es correcto", 400);
-    if (!!req.body.publisher && !validDataString(req.body.publisher)) throw new ClientError("La editorial no es correcta", 400);
+    if (!!req.body.name && !validText(req.body.name, 1, 200, true)) throw new ClientError("El nombre no es correcto", 400);
+    //if (!!req.body.category && !validDataString(req.body.category)) throw new ClientError("La categoria no es correcta", 400);
+    if (!!req.body.author && !validText(req.body.author, 1, 50, false)) throw new ClientError("El autor no es correcto", 400);
+    if (!!req.body.publisher && !validText(req.body.publisher, 1, 50, false)) throw new ClientError("La editorial no es correcta", 400);
     if (!!req.body.numberOfPlayers && !validNumber(req.body.numberOfPlayers)) throw new ClientError("El numero de jugadores no es correcto", 400);
     if (!!req.body.recommendedAge && !validNumber(req.body.recommendedAge)) throw new ClientError("La edad recomendada no es correcto", 400);
-    if (!!req.body.duration && !validDataString(req.body.duration)) throw new ClientError("La duracion no es correcta", 400);
-    if (!!req.body.description && !validDataString(req.body.description)) throw new ClientError("La descripcion no es correcta", 400);
+    if (!!req.body.duration && !validNumber(req.body.duration)) throw new ClientError("La duracion no es correcta", 400);
+    if (!!req.body.description && !validText(req.body.description, 1, 500, true)) throw new ClientError("La descripcion no es correcta", 400);
+    if (!!req.body.price && !validDecimalNumber(req.body.price)) throw new ClientError("El precio no es correcta", 400);
+    if (!!req.body.stock && !validNumber(req.body.stock, true)) throw new ClientError("El stock no es correcta", 400);
 
+    
     // Crear un nuevo Games
     //utilizando el modelo de Mongoose
     const newGame = new Games({
-        name: prevenirInyeccionCodigo(req.body.name),
-        category: prevenirInyeccionCodigo(req.body.category),
-        author: prevenirInyeccionCodigo(req.body.author),
-        publisher: prevenirInyeccionCodigo(req.body.publisher),
-        numberOfPlayers: prevenirInyeccionCodigo(req.body.numberOfPlayers),
-        recommendedAge: prevenirInyeccionCodigo(req.body.recommendedAge),
-        duration: prevenirInyeccionCodigo(req.body.duration),
-        description: prevenirInyeccionCodigo(req.body.description),
+        name: req.body.name,
+        category: req.body.category,
+        author: req.body.author,
+        publisher: req.body.publisher,
+        numberOfPlayers: req.body.numberOfPlayers,
+        recommendedAge: req.body.recommendedAge,
+        duration: req.body.duration,
+        description: req.body.description,
+        image:req.body.image,
+        price: req.body.price,
+        stock: req.body.stock,
     })
     // Guardar el games en la base de datos
     const savedGame = await newGame.save();
@@ -66,6 +72,20 @@ const getGamesFilterLimit = async (req, res) => {
     response(res, 200, games);
 }
 
+//lista d ejuegos con filtro 
+const getGamesFilter= async (req, res) => {
+    // Obtén el ID del parámetro de la solicitud
+    if(!req.body.name) throw new ClientError('Debe tener un nombre', 400)
+    const consulta={
+        name:{$regex: `.*${req.body.name}.*`}
+    }
+    
+
+    const games = await Games.find(consulta).catch(error => { throw new ClientError('games no encontrado', 404) });
+    // // Responde con el games encontrado y código de estado 200 (OK)
+    response(res, 200, games);
+}
+
 const getCountGamesFilter = async (req, res) => {
     const consulta={}
     if(!!req.body.categorias && req.body.categorias.length>0) consulta["category"]={ $in: req.body.categorias };
@@ -81,35 +101,39 @@ const getCountGamesFilter = async (req, res) => {
 
 // borrar un games
 const gamesDeleteId = async (req, res) => {
-    const id = req.params.id;
+    const id = req.body.id;
     const GamesDelete = await Games.deleteOne({ _id: id });
     response(res, 200, GamesDelete);
 }
 
 // modificar el games
 const gamesPut = async (req, res) => {
+
     const filter = { _id: req.body.id };
     const updateText = {};
-    if (!!req.body.name) updateText['name'] = prevenirInyeccionCodigo(req.body.name);
-    if (!!req.body.category) updateText['category'] = prevenirInyeccionCodigo(req.body.category);
-    if (!!req.body.author) updateText['author'] = prevenirInyeccionCodigo(req.body.author);
-    if (!!req.body.publisher) updateText['publisher'] = prevenirInyeccionCodigo(req.body.publisher);
-    if (!!req.body.numberOfPlayers && validNumber(req.body.numberOfPlayers)) {
-        updateText['numberOfPlayers'] = prevenirInyeccionCodigo(req.body.numberOfPlayers);
-    } else {
-        throw new ClientError('Dato incorrecto: numero de jugadores', 400)
-    }
-    if (!!req.body.recommendedAge && validNumber(req.body.recommendedAge)) {
-        updateText['recommendedAge'] = prevenirInyeccionCodigo(req.body.recommendedAge);
-    } else {
-        throw new ClientError('Dato incorrecto: edad recomendada', 400)
-    }
-    if (!!req.body.duration && validNumber(req.body.duration)) {
-        updateText['duration'] = prevenirInyeccionCodigo(req.body.duration)
-    } else {
-        throw new ClientError('Dato incorrecto: duracion', 400)
-    };
-    if (!!req.body.description) updateText['description'] = prevenirInyeccionCodigo(req.body.description);
+
+    if (!!req.body.name && !validText(req.body.name, 1, 200, true)) throw new ClientError("El nombre no es correcto", 400);
+    //if (!!req.body.category && !validDataString(req.body.category)) throw new ClientError("La categoria no es correcta", 400);
+    if (!!req.body.author && !validText(req.body.author, 1, 50, false)) throw new ClientError("El autor no es correcto", 400);
+    if (!!req.body.publisher && !validText(req.body.publisher, 1, 50, false)) throw new ClientError("La editorial no es correcta", 400);
+    if (!!req.body.numberOfPlayers && !validNumber(req.body.numberOfPlayers)) throw new ClientError("El numero de jugadores no es correcto", 400);
+    if (!!req.body.recommendedAge && !validNumber(req.body.recommendedAge)) throw new ClientError("La edad recomendada no es correcto", 400);
+    if (!!req.body.duration && !validNumber(req.body.duration)) throw new ClientError("La duracion no es correcta", 400);
+    if (!!req.body.description && !validText(req.body.description, 1, 500, true)) throw new ClientError("La descripcion no es correcta", 400);
+    if (!!req.body.price && !validDecimalNumber(req.body.price)) throw new ClientError("El precio no es correcta", 400);
+    if (!!req.body.stock && !validNumber(req.body.stock, true)) throw new ClientError("El stock no es correcta", 400);
+
+    if (!!req.body.name) updateText['name'] = req.body.name;
+    if (!!req.body.category) updateText['category'] = req.body.category;
+    if (!!req.body.author) updateText['author'] = req.body.author;
+    if (!!req.body.publisher) updateText['publisher'] = req.body.publisher;
+    if (!!req.body.numberOfPlayers) updateText['numberOfPlayers'] = req.body.numberOfPlayers;
+    if (!!req.body.recommendedAge) updateText['recommendedAge'] = req.body.recommendedAge;
+    if (!!req.body.duration) updateText['duration'] = req.body.duration;
+    if (!!req.body.description) updateText['description'] = req.body.description;
+    if (!!req.body.price) updateText['price'] = req.body.price;
+    if (!!req.body.stock) updateText['stock'] = req.body.stock;
+
     let doc = await Games.findOneAndUpdate(filter, updateText);
 
     response(res, 200, doc);
@@ -156,6 +180,7 @@ module.exports = {
     gamesPut: catchAsync(gamesPut),
     crearJuegosPrueba: catchAsync(crearJuegosPrueba),
     getGamesFilterLimit: catchAsync(getGamesFilterLimit),
+    getGamesFilter: catchAsync(getGamesFilter),
     getCountGamesFilter: catchAsync(getCountGamesFilter),
     getCategory: catchAsync(getCategory)
 }

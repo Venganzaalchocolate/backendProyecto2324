@@ -1,22 +1,10 @@
 const { generarHashpass } = require('./indexUtils');
 
 const validEmail =(email)=>{
-    // Expresión regular para validar el formato de un correo electrónico
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // Verificar si el correo electrónico cumple con el formato
-    return regex.test(email);
-  }
-
-const validNumber=(dato)=>{
-    // Comprobamos si el dato es un número
-    const numAux=dato.replace(/[^0-9]/g, '')
-    if (dato.length == numAux.length) {
-      if (parseInt(numAux)>0) return true;
-    }
-  
-  
-    // En caso contrario, el dato no es positivo
-    return false;
+  // Expresión regular para validar una dirección de correo electrónico
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Verificar si el correo electrónico coincide con la expresión regular
+  return emailRegex.test(email);
   }
 
 const validName=(name)=>{
@@ -33,8 +21,7 @@ const validName=(name)=>{
 
 const validDataString=(palabra)=>{
   const caracteresProhibidos = /[<>&"]/;
-  // Verificar si el input es un string
-  if (typeof palabra !== 'string') return false;
+
   // Verificar si hay caracteres especiales que podrían indicar intento de inyección de código
   if (caracteresProhibidos.test(palabra)) return false;
   // Si todo está bien, el string es válido
@@ -58,14 +45,53 @@ const createDate=(fecha)=> {
 }
   
 const esPassSegura=(pass)=>{
-    /*
-    (?=.*[A-Za-z]): Asegura que la contraseña contenga al menos una letra.
-    (?=.*\d): Asegura que la contraseña contenga al menos un dígito.
-    (?=.*[@$!%*?&]): Asegura que la contraseña contenga al menos un carácter especial, que puede ser cualquiera de los caracteres en @$!%*?&.
-    [A-Za-z\d@$!%*?&]{8,}: Acepta caracteres alfanuméricos y especiales, con una longitud mínima de 8 caracteres.
-    */
-    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(pass)) return false;
-    return true;
+  if (pass == undefined) return false
+  // Verificar si la contraseña tiene al menos 8 caracteres
+  if (pass.length < 8) {
+    return false;
+  }
+
+  // Verificar si la contraseña contiene al menos una letra minúscula
+  if (!/[a-z]/.test(pass)) {
+    return false;
+  }
+  // Verificar si la contraseña contiene al menos una letra mayúscula
+  if (!/[A-Z]/.test(pass)) {
+    return false;
+  }
+  // Verificar si la contraseña contiene al menos un número
+  if (!/\d/.test(pass)) {
+    return false;
+  }
+  // Verificar si la contraseña contiene al menos un carácter especial
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pass)) {
+    return false;
+  }
+  // La contraseña cumple con todos los criterios
+  return true;
+  }
+
+ const validText=(texto, longitudMinima, longitudMaxima, numerosycaracteresespeciales=false)=>{
+    // Verificar la longitud del texto
+    if (texto.length < longitudMinima || texto.length > longitudMaxima) {
+        return false;
+    }
+  
+    // Definir la expresión regular para caracteres permitidos (letras, números y espacios)
+    const regex =(numerosycaracteresespeciales) ?/^[a-zA-ZÀ-ÿ0-9\s,º:/()]+$/:/^[a-zA-ZÀ-ÿ\s]+$/;
+    return regex.test(texto);
+  }
+  
+  
+const validNumber=(texto, cero=false)=>{
+    let regex =/^[1-9][0-9]*$/; 
+    if(cero) regex =/^(0|[1-9][0-9]*)$/;
+    return regex.test(texto);
+  }
+  
+ const validDecimalNumber=(texto)=>{
+    const regex =/^[0-9]+(\.[0-9]+)?$/;
+    return regex.test(texto);
   }
 
 
@@ -78,5 +104,13 @@ const esPassSegura=(pass)=>{
     createDate,
     validDataString,
     prevenirInyeccionCodigo,
+    validText,
+    validDecimalNumber
 
   };
+
+
+
+
+
+

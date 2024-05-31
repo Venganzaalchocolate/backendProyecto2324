@@ -1,4 +1,4 @@
-const {validEmail,esPassSegura, validName, validNumber, validDate, createDate, validDataString, prevenirInyeccionCodigo}=require("./validarDatos")
+const {validEmail,esPassSegura, validName, validNumber, validDate, createDate, validDataString, prevenirInyeccionCodigo, validText, validDecimalNumber}=require("./validarDatos")
 const { generarHashpass, comprobarPass } = require('./bcrypt');
 const {catchAsync} =require('./catchAsync')
 const {response}=require('./response')
@@ -25,5 +25,7 @@ module.exports  = {
     calcularPrecio,
     comprobarPass,
     generarToken,
-    verificarToken
+    verificarToken,
+    validText,
+    validDecimalNumber
 }

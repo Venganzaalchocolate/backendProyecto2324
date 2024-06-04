@@ -9,8 +9,8 @@ const postCrearOrder = async (req, res) => {
         listaJuegos: listaJuegosBody,
         date: new Date(),
         address: req.body.address,
-        state:'Pagado',
-        totalPrice: req.body.totalPrice,
+        state:'Pendiente de pago',
+        totalPrice: calcularPrecio(listaJuegosBody),
         })
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -51,6 +51,46 @@ const postCrearOrder = async (req, res) => {
     // Enviar el usuario guardado como respuesta
     
 }
+
+const putOrder=async (req,res)=>{
+    try {
+        const idPedido=req.body.idPedido;
+        let listaJuegosBody= await Order.findById(req.body.idPedido)
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        // Iterar sobre cada juego en la lista para actualizar el stock
+        for (const x of listaJuegosBody.listaJuegos) {
+            const updatedGame = await Games.findOneAndUpdate(
+                { _id: x.gameId },
+                { $inc: { stock: +x.quantity } },
+                { new: true, runValidators: true, session }
+            );
+
+            if (!updatedGame) {
+                throw new ClientError(`Juego con ID ${x.gameId} no encontrado`, 404);
+            }
+
+            if (updatedGame.stock < 0) {
+                throw new ClientError(`No hay suficiente stock para el juego ${updatedGame.name}`, 403);
+            }
+        }
+
+        const orderModify = await Order.findByIdAndUpdate(idPedido, { state: 'Deshabilitado' }, { new: true, session });
+        // Confirmar la transacción
+        await session.commitTransaction();
+        session.endSession();
+
+        // Enviar el pedido guardado como respuesta
+        response(res, 200, orderModify)
+    } catch (error) {
+        // Abortar la transacción en caso de error
+        await session.abortTransaction();
+        session.endSession();
+        throw new ClientError(`No se ha podido realizar el pedido: ${error}`, 500)
+    }
+    
+    response(res, 200, orderModify);
+}
 //recoge todos los usuarios
 const getOrder= async (req,res)=>{
     const id = req.body.id;
@@ -85,4 +125,5 @@ module.exports = {
     getOrder:catchAsync(getOrder),
     getOrderID:catchAsync(getOrderID),
     orderDeleteId:catchAsync(orderDeleteId),
+    putOrder:catchAsync(putOrder)
 }

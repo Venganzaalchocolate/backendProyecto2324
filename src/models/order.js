@@ -44,7 +44,7 @@ const order =  mongoose.Schema({
     state:{
         type: String,
         required: true,
-        enum: ['Pagado', 'Preparando', 'Enviado', 'Entregado']
+        enum: ['Pendiente de pago','Pagado', 'Preparando', 'Enviado', 'Entregado', 'Deshabilitado']
     }
 });
 

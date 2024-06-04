@@ -35,6 +35,15 @@ const getUsers= async (req,res)=>{
     response(res, 200, usuarios);
 }
 
+const getUsersFilter= async (req,res)=>{
+    const filter = {name: {$regex: `.*${req.body.name}.*`}}
+    // Utiliza el método find() de Mongoose para obtener todos los documentos en la colección
+    const usuarios = await User.find(filter);
+    // Responde con la lista de usuarios y código de estado 200 (OK)
+    response(res, 200, usuarios);
+}
+
+
 //busca un usuario por ID
 const getUserID= async (req,res)=>{
     // Obtén el ID del parámetro de la solicitud
@@ -61,6 +70,7 @@ const userPut=async (req, res)=>{
     if(req.body.email!=null) updateText['email']=prevenirInyeccionCodigo(req.body.email);
     if(req.body.direccion!=null) updateText['direction']=prevenirInyeccionCodigo(req.body.direccion);
     if(req.body.password!=null && esPassSegura(req.body.password) ) updateText['pass']=await generarHashpass(req.body.password);
+    if(req.body.role!=null && (req.body.role=='normal' || req.body.role=='admin')) updateText['role']=req.body.role;
     let doc = await User.findOneAndUpdate(filter, updateText);
     if(doc!=null)doc= await User.findById(req.body.id)
     else throw new ClientError("No existe el usuario", 400)
@@ -73,5 +83,6 @@ module.exports = {
     getUsers:catchAsync(getUsers),
     getUserID:catchAsync(getUserID),
     UserDeleteId:catchAsync(UserDeleteId),
-    userPut:catchAsync(userPut)
+    userPut:catchAsync(userPut),
+    getUsersFilter:catchAsync(getUsersFilter)
 }

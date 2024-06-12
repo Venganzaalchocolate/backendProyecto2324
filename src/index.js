@@ -10,7 +10,7 @@ const emailRoutes=require("./routes/emailRoutes");
 const {resError} = require('./utils/indexUtils');
 const { ClientError } = require('./utils/clientError');
 
-
+const port = process.env.PORT || 10000;
 // usamos dtenv para las variables de entorno 
 require('dotenv').config()
 
@@ -20,7 +20,8 @@ app.use(express.json());
 // le asignamos una constante a las rutas de usuario
 
 // donde escucha el servidor 
-app.listen(process.env.PORT);
+app.listen(port);
+
 app.use(cors());
 //le ponemos un "prefijo" a las rutas
 app.use('/api',gamesRoutes)

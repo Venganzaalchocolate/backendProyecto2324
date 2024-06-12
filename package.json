@@ -23,7 +23,7 @@
     "nodemon": "^3.0.3"
   },
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js --env-file=.env",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

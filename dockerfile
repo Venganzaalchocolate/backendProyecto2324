@@ -16,8 +16,5 @@ COPY . .
 # Expone el puerto que la aplicación va a utilizar
 EXPOSE 10000
 
-# Define la variable de entorno para el puerto
-ENV PORT=10000
-
 # Comando para ejecutar la aplicación en producción
 CMD [ "npm", "start" ]

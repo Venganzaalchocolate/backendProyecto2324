@@ -36,7 +36,9 @@ app.use((err,req,res,next)=>{
   resError(res,statusCode,message)
 })
 
-mongoose.connect(process.env.URI);
+const uri = `mongodb+srv://${process.env.USERNAME}:${process.env.PASS}@bbdd2324.t6l3ndc.mongodb.net/?retryWrites=true&w=majority&appName=BBDD2324`;
+
+mongoose.connect(uri);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', () => {

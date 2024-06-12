@@ -1,5 +1,5 @@
 const {User} = require('../models/indexModels');
-const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
+const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError, sendEmail } = require('../utils/indexUtils');
 
 // crear usuario
 const postCrearUsuario = async (req, res) => {
@@ -23,6 +23,15 @@ const postCrearUsuario = async (req, res) => {
     })
     // Guardar el usuario en la base de datos
     const savedUser = await newUser.save();
+    /*to, from, subject, messageAux*/
+    const messageAux={
+        name:req.body.nombre,
+        from:'mesamagicatienda@gmail.com',
+        to:req.body.email,
+        subject:"Gracias por unirte a MesaMágica",
+        message:"Tu cuenta se ha creado con éxito"
+    }
+    await sendEmail(messageAux.to, messageAux.from, messageAux.subject, messageAux)
     // Enviar el usuario guardado como respuesta
     response(res, 200, savedUser)
 }

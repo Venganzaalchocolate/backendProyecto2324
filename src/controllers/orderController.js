@@ -1,11 +1,11 @@
-const {Order, ListaJuegos, Games} = require('../models/indexModels');
-const {  prevenirInyeccionCodigo, catchAsync, response, gestionErrores, ClientError, generarHashpass, calcularPrecio } = require('../utils/indexUtils');
+const {Order, ListaJuegos, Games, User} = require('../models/indexModels');
+const {  prevenirInyeccionCodigo, catchAsync, response, gestionErrores, ClientError, generarHashpass, calcularPrecio, sendEmail } = require('../utils/indexUtils');
 const mongoose = require('mongoose');
 // crear usuario
 const postCrearOrder = async (req, res) => {
     const listaJuegosBody=req.body.listaJuegos
     const newOrder=new Order({
-        userId: prevenirInyeccionCodigo(req.body.userId),
+        userId: req.body.userId,
         listaJuegos: listaJuegosBody,
         date: new Date(),
         address: req.body.address,
@@ -35,11 +35,20 @@ const postCrearOrder = async (req, res) => {
     
             // Guardar el pedido en la base de datos
             const savedOrder = await newOrder.save({ session });
-    
+            const userAux=await User.findById(req.body.userId).session(session);
+            const messageAux={
+                name:userAux.name,
+                from:'mesamagicatienda@gmail.com',
+                to:userAux.email,
+                subject:`Pedido: ${savedOrder['_id']} realizado con éxito`,
+                message:"Gracias por comprar en MesaMágica, en breve tendrás tus juegos en casa"
+            }
+            await sendEmail(messageAux.to, messageAux.from, messageAux.subject, messageAux)
             // Confirmar la transacción
             await session.commitTransaction();
+            
             session.endSession();
-
+            
             // Enviar el pedido guardado como respuesta
             response(res, 200, savedOrder)
         } catch (error) {

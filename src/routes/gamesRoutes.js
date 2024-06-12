@@ -15,4 +15,4 @@ router.post("/gamesfilter", urlencodedParser,getGamesFilter)
 router.post("/gamescountgames", urlencodedParser,getCountGamesFilter)
 router.get("/gamescategory", urlencodedParser,getCategory)
 
-module.exports = router;
+module.exports = router;    

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router()
-const { tokenValid, sendEmail} = require('../controllers/indexController')
+const { tokenValid, enviarEmail} = require('../controllers/indexController')
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-router.post("/email", urlencodedParser, sendEmail)
+router.post("/contacto", urlencodedParser, enviarEmail)
 
 module.exports = router;

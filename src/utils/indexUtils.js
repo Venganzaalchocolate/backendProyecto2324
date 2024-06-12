@@ -6,6 +6,7 @@ const {ClientError}=require('./clientError')
 const {resError}= require('./resError');
 const { calcularPrecio } = require("./utils");
 const { generarToken, verificarToken } = require("./jwt");
+const { sendEmail } = require("./emailController");
 
 module.exports  = {
     resError,
@@ -27,5 +28,6 @@ module.exports  = {
     generarToken,
     verificarToken,
     validText,
-    validDecimalNumber
+    validDecimalNumber,
+    sendEmail
 }

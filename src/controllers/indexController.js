@@ -3,7 +3,7 @@ const { postCrearOrder, getOrder, getOrderID, orderDeleteId, putOrder } = requir
 const { getGames, getGamesID, gamesPut, gamesDeleteId, postCrearGames, crearJuegosPrueba, getGamesFilterLimit, getCountGamesFilter, getCategory, getGamesFilter} = require("./gamesController");
 const { login, validToken } = require("./loginController");
 const {tokenValid, tokenValidAdmin} = require("./authController");
-const {sendEmail} = require("./emailController");
+const { enviarEmail } = require("./emailController");
 
 
 module.exports = {
@@ -12,5 +12,5 @@ module.exports = {
     getGames, getGamesID, gamesPut, gamesDeleteId, postCrearGames, crearJuegosPrueba,getGamesFilterLimit,getCountGamesFilter,getCategory,getGamesFilter,
     login, validToken,
     tokenValid, tokenValidAdmin,
-    sendEmail
+    enviarEmail
 }

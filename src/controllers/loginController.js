@@ -23,7 +23,7 @@ const validToken=async(req,res)=>{
         const usuario = await User.findOne({ _id: id});
         response(res,200,usuario)
     } else{
-        throw new ClientError("El token no es correcto o a expirado", 403);
+        throw new ClientError("El token no es correcto", 401);
     }
     
 

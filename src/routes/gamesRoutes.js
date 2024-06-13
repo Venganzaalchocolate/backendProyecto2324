@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get("/games", urlencodedParser, getGames)
-router.get("/crearjuegosprueba", urlencodedParser, crearJuegosPrueba)
 router.get("/games/:id", urlencodedParser, getGamesID)
 router.post("/creargames", urlencodedParser,tokenValidAdmin, postCrearGames)
 router.delete("/borrargames", urlencodedParser,tokenValidAdmin,gamesDeleteId)
